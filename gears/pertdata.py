@@ -54,7 +54,8 @@ class PertData:
     
     def __init__(self, data_path, 
                  gene_set_path=None, 
-                 default_pert_graph=True):
+                 default_pert_graph=True,
+                 gene2go=None):
         """
         Parameters
         ----------
@@ -87,13 +88,17 @@ class PertData:
         self.subgroup = None
         self.train_gene_set_size = None
 
-        if not os.path.exists(self.data_path):
-            os.mkdir(self.data_path)
-        server_path = 'https://dataverse.harvard.edu/api/access/datafile/6153417'
-        dataverse_download(server_path,
-                           os.path.join(self.data_path, 'gene2go_all.pkl'))
-        with open(os.path.join(self.data_path, 'gene2go_all.pkl'), 'rb') as f:
-            self.gene2go = pickle.load(f)
+        if not gene2go:
+
+            if not os.path.exists(self.data_path):
+                os.mkdir(self.data_path)
+            server_path = 'https://dataverse.harvard.edu/api/access/datafile/6153417'
+            dataverse_download(server_path,
+                            os.path.join(self.data_path, 'gene2go_all.pkl'))
+            with open(os.path.join(self.data_path, 'gene2go_all.pkl'), 'rb') as f:
+                self.gene2go = pickle.load(f)
+        else:
+            self.gene2go = gene2go
     
     def set_pert_genes(self):
         """
