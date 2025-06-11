@@ -204,7 +204,7 @@ def get_GO_edge_list(args):
             edge_list.append((g1, g2, score))
     return edge_list
         
-def make_GO(data_path, pert_list, data_name, num_workers=25, save=True):
+def make_GO(data_path, pert_list, data_name, gene2go=None, num_workers=25, save=True):
     """
     Creates Gene Ontology graph from a custom set of genes
     """
@@ -213,8 +213,9 @@ def make_GO(data_path, pert_list, data_name, num_workers=25, save=True):
     if os.path.exists(fname):
         return pd.read_csv(fname)
 
-    with open(os.path.join(data_path, 'gene2go_all.pkl'), 'rb') as f:
-        gene2go = pickle.load(f)
+    if gene2go is None:
+        with open(os.path.join(data_path, 'gene2go_all.pkl'), 'rb') as f:
+            gene2go = pickle.load(f)
     gene2go = {i: gene2go[i] for i in pert_list}
 
     print('Creating custom GO graph, this can take a few minutes')
@@ -237,7 +238,7 @@ def make_GO(data_path, pert_list, data_name, num_workers=25, save=True):
 
 def get_similarity_network(network_type, adata, threshold, k,
                            data_path, data_name, split, seed, train_gene_set_size,
-                           set2conditions, default_pert_graph=True, pert_list=None):
+                           set2conditions, default_pert_graph=True, pert_list=None, gene2go=None):
     
     if network_type == 'co-express':
         df_out = get_coexpression_network_from_train(adata, threshold, k,
@@ -254,7 +255,7 @@ def get_similarity_network(network_type, adata, threshold, k,
                                      'go_essential_all/go_essential_all.csv'))
 
         else:
-            df_jaccard = make_GO(data_path, pert_list, data_name)
+            df_jaccard = make_GO(data_path, pert_list, data_name, gene2go=gene2go)
 
         df_out = df_jaccard.groupby('target').apply(lambda x: x.nlargest(k + 1,
                                     ['importance'])).reset_index(drop = True)

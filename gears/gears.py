@@ -66,6 +66,7 @@ class GEARS:
         
         self.dataloader = pert_data.dataloader
         self.adata = pert_data.adata
+        self.gene2go = pert_data.gene2go
         self.node_map = pert_data.node_map
         self.node_map_pert = pert_data.node_map_pert
         self.data_path = pert_data.data_path
@@ -210,7 +211,7 @@ class GEARS:
                                                data_name=self.dataset_name,
                                                split=self.split, seed=self.seed,
                                                train_gene_set_size=self.train_gene_set_size,
-                                               set2conditions=self.set2conditions)
+                                               set2conditions=self.set2conditions, gene2go=self.gene2go)
 
             sim_network = GeneSimNetwork(edge_list, self.gene_list, node_map = self.node_map)
             self.config['G_coexpress'] = sim_network.edge_index
@@ -228,7 +229,7 @@ class GEARS:
                                                split=self.split, seed=self.seed,
                                                train_gene_set_size=self.train_gene_set_size,
                                                set2conditions=self.set2conditions,
-                                               default_pert_graph=self.default_pert_graph)
+                                               default_pert_graph=self.default_pert_graph, gene2go=self.gene2go)
 
             sim_network = GeneSimNetwork(edge_list, self.pert_list, node_map = self.node_map_pert)
             self.config['G_go'] = sim_network.edge_index
