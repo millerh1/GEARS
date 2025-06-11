@@ -214,6 +214,7 @@ def make_GO(data_path, pert_list, data_name, gene2go=None, num_workers=25, save=
         return pd.read_csv(fname)
 
     if gene2go is None:
+        raise ValueError(f"Should have provided gene2go: {gene2go}")
         with open(os.path.join(data_path, 'gene2go_all.pkl'), 'rb') as f:
             gene2go = pickle.load(f)
     gene2go = {i: gene2go[i] for i in pert_list}
