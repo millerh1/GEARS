@@ -256,7 +256,7 @@ def get_similarity_network(network_type, adata, threshold, k,
                                      'go_essential_all/go_essential_all.csv'))
 
         else:
-            df_jaccard = make_GO(data_path, pert_list, data_name, gene2go=gene2go)
+            df_jaccard = make_GO(data_path, pert_list, data_name, gene2go=gene2go, save=False)
 
         df_out = df_jaccard.groupby('target').apply(lambda x: x.nlargest(k + 1,
                                     ['importance'])).reset_index(drop = True)
